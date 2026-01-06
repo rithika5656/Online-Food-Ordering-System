@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="180" viewBox="0 0 300 180">
+  <rect width="300" height="180" fill="#f5f5f5"/>
+  <circle cx="150" cy="70" r="40" fill="#ff6b35" opacity="0.3"/>
+  <text x="150" y="75" text-anchor="middle" fill="#ff6b35" font-family="Arial, sans-serif" font-size="24">🍽️</text>
+  <text x="150" y="130" text-anchor="middle" fill="#999" font-family="Arial, sans-serif" font-size="14">Food Image</text>
+  <text x="150" y="150" text-anchor="middle" fill="#ccc" font-family="Arial, sans-serif" font-size="10">Campus Food</text>
+</svg>
