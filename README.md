@@ -1,7 +1,6 @@
 # Online Food Ordering System
 
 A simple web-based food ordering system for campus canteen, built with PHP, MySQL, HTML, CSS, and JavaScript.
-
 ## Features
 
 ### For Students/Users
