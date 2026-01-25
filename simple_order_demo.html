@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Food Order Demo</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; }
+        .container { max-width: 500px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+        h2 { text-align: center; }
+        .menu-item { display: flex; justify-content: space-between; margin: 10px 0; }
+        .order-btn { display: block; width: 100%; margin-top: 20px; padding: 10px; background: #28a745; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        .order-btn:hover { background: #218838; }
+        .success { color: #28a745; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Place Your Order</h2>
+        <form id="orderForm">
+            <div class="menu-item">
+                <span>Pizza</span>
+                <input type="number" name="pizza" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>Burger</span>
+                <input type="number" name="burger" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>Pasta</span>
+                <input type="number" name="pasta" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>Fries</span>
+                <input type="number" name="fries" min="0" value="0">
+            </div>
+            <button type="submit" class="order-btn">Place Order</button>
+        </form>
+        <div id="orderResult" class="success" style="display:none;"></div>
+    </div>
+    <script>
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            let items = [];
+            ['pizza', 'burger', 'pasta', 'fries'].forEach(item => {
+                const qty = parseInt(form[item].value, 10);
+                if (qty > 0) items.push(`${qty} x ${item.charAt(0).toUpperCase() + item.slice(1)}`);
+            });
+            const result = document.getElementById('orderResult');
+            if (items.length > 0) {
+                result.textContent = 'Order placed: ' + items.join(', ');
+                result.style.display = 'block';
+            } else {
+                result.textContent = 'Please select at least one item.';
+                result.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

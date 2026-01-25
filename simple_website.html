@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rithi's Food Hub | Gourmet Flavors</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff4757;
+            --primary-dark: #e84118;
+            --accent: #ffa502;
+            --bg: #f8f9fa;
+            --text: #2f3542;
+            --glass: rgba(255, 255, 255, 0.95);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            padding-top: 70px;
+            /* Space for fixed navbar */
+            position: relative;
+        }
+
+        /* Ambient Bubble Background */
+        .bubble-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Diverse Colors via nth-child in CSS would be static, so we handle colors in JS, 
+           but let's add a wobble to the animation here */
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.4;
+            }
+
+            33% {
+                transform: translateY(-40vh) translateX(30px) scale(1.1);
+            }
+
+            66% {
+                transform: translateY(-80vh) translateX(-30px) scale(1.15);
+            }
+
+            100% {
+                transform: translateY(-120vh) translateX(0) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Glass Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 30px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(47, 53, 66, 0.8)), url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-bottom: 50px;
+            border-radius: 0 0 50px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #ff9f43, #ff4757);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        /* Category Headers */
+        .category-header {
+            text-align: left;
+            margin: 60px 0 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            color: var(--text);
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-header i {
+            color: var(--primary);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        /* Interactive Card */
+        .menu-item {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.4s ease;
+            position: relative;
+            transform: translateY(30px);
+            /* For scroll reveal */
+            opacity: 0;
+            animation: fadeUp 0.6s forwards;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-item.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px) !important;
+            box-shadow: 0 20px 40px rgba(255, 71, 87, 0.15);
+            border-color: rgba(255, 71, 87, 0.2);
+        }
+
+        .image-container {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .menu-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .menu-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .fav-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #ccc;
+            transition: all 0.3s;
+            z-index: 2;
+        }
+
+        .fav-btn:hover,
+        .fav-btn.active {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .item-details {
+            padding: 25px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .item-header h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .price {
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3);
+        }
+
+        .item-desc {
+            color: #747d8c;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 12px;
+        }
+
+        .qty-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+            color: var(--text);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qty-btn:active {
+            transform: scale(0.9);
+        }
+
+        .qty-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        input[type="number"] {
+            width: 40px;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+        }
+
+        /* Floating Order Bar */
+        .order-bar {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 999;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .order-bar.active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .order-summary {
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .checkout-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .checkout-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Click Burst Particle */
+        .click-particle {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: burst 0.8s ease-out forwards;
+            opacity: 0;
+            z-index: 9999;
+        }
+
+        @keyframes burst {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--mx), var(--my)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            z-index: 2000;
+        }
+
+        .toast {
+            background: white;
+            padding: 15px 25px;
+            border-left: 5px solid var(--primary);
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.4s ease;
+            transform-origin: right;
+            min-width: 300px;
+        }
+
+        .toast.success {
+            border-color: #2ecc71;
+        }
+
+        .toast.error {
+            border-color: #ff4757;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            /* Hide headers on mobile for simplicity */
+            .navbar {
+                justify-content: center;
+            }
+
+            .order-bar {
+                width: 95%;
+                bottom: 20px;
+                padding: 12px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Ambient Bubble Background -->
+    <div class="bubble-bg" id="bubbleBg"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="#" class="navbar-brand"><i class="fas fa-utensils"></i> Rithi's Food Hub</a>
+        <div class="nav-links">
+            <a href="#nonveg">Non-Veg</a>
+            <a href="#veg">Veg</a>
+            <a href="#desserts">Desserts</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Rithi's Food Hub</h1>
+            <p>Where Passion Meets Palate. Gourmet dishes crafted for the food lover in you.</p>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Non-Veg Section -->
+        <div id="nonveg" class="category-header">
+            <i class="fas fa-drumstick-bite"></i> Non-Veg Delights
+        </div>
+        <div class="menu-grid">
+
+            <div class="menu-item scroll-reveal" data-id="chk_burger" data-price="12">
+                <div class="image-container">
+                    <img
+                        src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80">
+                    <div class="fav-btn" onclick="toggleFav(this)"><i class="fas fa-heart"></i></div>
+                </div>
+                <div class="item-details">
+                    <div class="item-header">
+                        <h3>Chicken Burger</h3>
+                        <span class="price">$12</span>
+                    </div>
+                    <p class="item-desc">Juicy grilled chicken patty topped with melted cheddar, fresh lettuce, and
+                        spicy chipotle sauce.</p>
+                    <div class="controls">
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" onclick="updateQty(this, 'chk_burger', -1)">-</button>
+                            <input type="number" value="0" id="chk_burger" readonly>
+                            <button class="qty-btn" onclick="updateQty(this, 'chk_burger', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-item scroll-reveal" data-id="bbq_wings" data-price="15">
+                <div class="image-container">
+                    <img
+                        src="https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80">
+                    <div class="fav-btn" onclick="toggleFav(this)"><i class="fas fa-heart"></i></div>
+                </div>
+                <div class="item-details">
+                    <div class="item-header">
+                        <h3>Smoky BBQ Wings</h3>
+                        <span class="price">$15</span>
+                    </div>
+                    <p class="item-desc">6 pieces of crispy wings tossed in our signature hickory-smoked BBQ glaze.</p>
+                    <div class="controls">
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" onclick="updateQty(this, 'bbq_wings', -1)">-</button>
+                            <input type="number" value="0" id="bbq_wings" readonly>
+                            <button class="qty-btn" onclick="updateQty(this, 'bbq_wings', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-item scroll-reveal" data-id="pep_pizza" data-price="18">
+                <div class="image-container">
+                    <img
+                        src="https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80">
+                    <div class="fav-btn" onclick="toggleFav(this)"><i class="fas fa-heart"></i></div>
+                </div>
+                <div class="item-details">
+                    <div class="item-header">
+                        <h3>Pepperoni Pizza</h3>
+                        <span class="price">$18</span>
+                    </div>
+                    <p class="item-desc">Classic Italian crust topped with premium pepperoni slices and double
+                        mozzarella.</p>
+                    <div class="controls">
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" onclick="updateQty(this, 'pep_pizza', -1)">-</button>
+                            <input type="number" value="0" id="pep_pizza" readonly>
+                            <button class="qty-btn" onclick="updateQty(this, 'pep_pizza', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Veg Section -->
+        <div id="veg" class="category-header">
+            <i class="fas fa-leaf"></i> Veg Favorites
+        </div>
+        <div class="menu-grid">
+
+            <div class="menu-item scroll-reveal" data-id="veg_pizza" data-price="14">
+                <div class="image-container">
+                    <img
+                        src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80">
+                    <div class="fav-btn" onclick="toggleFav(this)"><i class="fas fa-heart"></i></div>
+                </div>
+                <div class="item-details">
+                    <div class="item-header">
+                        <h3>Veggie Supreme</h3>
+                        <span class="price">$14</span>
+                    </div>
+                    <p class="item-desc">A garden delight with bell peppers, onions, mushrooms, olives, and sweet corn.
+                    </p>
+                    <div class="controls">
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" onclick="updateQty(this, 'veg_pizza', -1)">-</button>
+                            <input type="number" value="0" id="veg_pizza" readonly>
+                            <button class="qty-btn" onclick="updateQty(this, 'veg_pizza', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-item scroll-reveal" data-id="pasta" data-price="14">
+                <div class="image-container">
+                    <img
+                        src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=600&q=80">
+                    <div class="fav-btn" onclick="toggleFav(this)"><i class="fas fa-heart"></i></div>
+                </div>
+                <div class="item-details">
+                    <div class="item-header">
+                        <h3>Creamy Alfredo</h3>
+                        <span class="price">$14</span>
+                    </div>
+                    <p class="item-desc">Handmade fettuccine tossed in a rich white Parmesan sauce with broccoli
+                        florets.</p>
+                    <div class="controls">
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" onclick="updateQty(this, 'pasta', -1)">-</button>
+                            <input type="number" value="0" id="pasta" readonly>
+                            <button class="qty-btn" onclick="updateQty(this, 'pasta', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-item scroll-reveal" data-id="paneer_wrap" data-price="10">
+                <div class="image-container">
+                    <img
+                        src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80">
+                    <div class="fav-btn" onclick="toggleFav(this)"><i class="fas fa-heart"></i></div>
+                </div>
+                <div class="item-details">
+                    <div class="item-header">
+                        <h3>Spicy Paneer Wrap</h3>
+                        <span class="price">$10</span>
+                    </div>
+                    <p class="item-desc">Grilled paneer cubes marinated in spices, wrapped in a soft tortilla with fresh
+                        salad.</p>
+                    <div class="controls">
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" onclick="updateQty(this, 'paneer_wrap', -1)">-</button>
+                            <input type="number" value="0" id="paneer_wrap" readonly>
+                            <button class="qty-btn" onclick="updateQty(this, 'paneer_wrap', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Desserts Section -->
+        <div id="desserts" class="category-header">
+            <i class="fas fa-ice-cream"></i> Desserts
+        </div>
+        <div class="menu-grid">
+
+            <div class="menu-item scroll-reveal" data-id="choc_ice" data-price="6">
+                <div class="image-container">
+                    <img
+                        src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=600&q=80">
+                    <div class="fav-btn" onclick="toggleFav(this)"><i class="fas fa-heart"></i></div>
+                </div>
+                <div class="item-details">
+                    <div class="item-header">
+                        <h3>Chocolate Bliss</h3>
+                        <span class="price">$6</span>
+                    </div>
+                    <p class="item-desc">Decadent dark chocolate ice cream scoops loaded with fudge chunks.</p>
+                    <div class="controls">
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" onclick="updateQty(this, 'choc_ice', -1)">-</button>
+                            <input type="number" value="0" id="choc_ice" readonly>
+                            <button class="qty-btn" onclick="updateQty(this, 'choc_ice', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-item scroll-reveal" data-id="berry_sun" data-price="7">
+                <div class="image-container">
+                    <img
+                        src="https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=600&q=80">
+                    <div class="fav-btn" onclick="toggleFav(this)"><i class="fas fa-heart"></i></div>
+                </div>
+                <div class="item-details">
+                    <div class="item-header">
+                        <h3>Berry Sundae</h3>
+                        <span class="price">$7</span>
+                    </div>
+                    <p class="item-desc">Classic vanilla bean ice cream drizzled with fresh strawberry compote.</p>
+                    <div class="controls">
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" onclick="updateQty(this, 'berry_sun', -1)">-</button>
+                            <input type="number" value="0" id="berry_sun" readonly>
+                            <button class="qty-btn" onclick="updateQty(this, 'berry_sun', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-item scroll-reveal" data-id="brownie" data-price="5">
+                <div class="image-container">
+                    <img
+                        src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80">
+                    <div class="fav-btn" onclick="toggleFav(this)"><i class="fas fa-heart"></i></div>
+                </div>
+                <div class="item-details">
+                    <div class="item-header">
+                        <h3>Fudge Brownie</h3>
+                        <span class="price">$5</span>
+                    </div>
+                    <p class="item-desc">Warm, gooey chocolate fudge brownie served with a side of caramel sauce.</p>
+                    <div class="controls">
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" onclick="updateQty(this, 'brownie', -1)">-</button>
+                            <input type="number" value="0" id="brownie" readonly>
+                            <button class="qty-btn" onclick="updateQty(this, 'brownie', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Floating Order Bar -->
+    <div class="order-bar" id="orderBar">
+        <div class="order-summary" id="orderSummary">0 Items | Total: $0</div>
+        <button class="checkout-btn" onclick="checkout(event)">
+            Place Order <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Init Background Bubbles
+        function createAmbientBubbles() {
+            const bg = document.getElementById('bubbleBg');
+            const colors = [
+                'rgba(255, 71, 87, 0.3)',   // Primary Red
+                'rgba(255, 165, 2, 0.3)',   // Orange
+                'rgba(55, 66, 250, 0.3)',   // Blue
+                'rgba(46, 213, 115, 0.3)',  // Green
+                'rgba(255, 107, 129, 0.3)', // Pink
+                'rgba(112, 161, 255, 0.3)'  // Light Blue
+            ];
+
+            for (let i = 0; i < 25; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+
+                const size = Math.random() * 60 + 20;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${Math.random() * 100}vw`;
+                bubble.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                bubble.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+                bg.appendChild(bubble);
+            }
+        }
+        createAmbientBubbles();
+
+        // Click Burst Effect
+        function createBurst(x, y) {
+            const colors = ['#ff4757', '#ffa502', '#2ecc71', '#3742fa'];
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('click-particle');
+
+                // Random destination
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 100 + 50;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.setProperty('--mx', `${tx}px`);
+                particle.style.setProperty('--my', `${ty}px`);
+
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 800);
+            }
+        }
+
+        // Scroll Animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+        });
+
+        // State
+        let totalItems = 0;
+        let totalPrice = 0;
+
+        function updateQty(btn, id, change) {
+            // Trigger burst at button position
+            const rect = btn.getBoundingClientRect();
+            createBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+            const input = document.getElementById(id);
+            const card = input.closest('.menu-item');
+            const price = parseInt(card.getAttribute('data-price'));
+            let val = parseInt(input.value);
+
+            // Prevent negative
+            if (val + change < 0) return;
+
+            val += change;
+            input.value = val;
+
+            // Global State update
+            totalItems += change;
+            totalPrice += change * price;
+
+            updateOrderBar();
+
+            // Show feedback
+            if (change > 0) {
+                showToast('Item added to cart', 'success');
+            } else if (change < 0 && val >= 0) {
+                showToast('Item removed from cart', 'error');
+            }
+        }
+
+        function updateOrderBar() {
+            const bar = document.getElementById('orderBar');
+            const summary = document.getElementById('orderSummary');
+
+            summary.textContent = `${totalItems} Items | Total: $${totalPrice}`;
+
+            if (totalItems > 0) {
+                bar.classList.add('active');
+            } else {
+                bar.classList.remove('active');
+            }
+        }
+
+        function toggleFav(btn) {
+            const rect = btn.getBoundingClientRect();
+            createBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+            btn.classList.toggle('active');
+            const icon = btn.querySelector('i');
+            if (btn.classList.contains('active')) {
+                icon.className = 'fas fa-heart';
+                icon.style.color = '#ff4757';
+                showToast('Added to Favorites', 'success');
+            } else {
+                icon.style.color = '#ccc';
+                showToast('Removed from Favorites', 'error');
+            }
+        }
+
+        function showToast(message, type) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        function checkout(e) {
+            if (totalItems === 0) {
+                showToast('Please select at least one item to order.', 'error');
+                return;
+            }
+
+            // Mega burst from button
+            const rect = e.target.getBoundingClientRect();
+            createBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+            createBurst(rect.left, rect.top);
+            createBurst(rect.right, rect.bottom);
+
+            setTimeout(() => {
+                alert(`Thanks for ordering at Rithi's Food Hub!\n\nYour Total is $${totalPrice}`);
+                // Reset
+                document.querySelectorAll('input[type="number"]').forEach(inpt => inpt.value = 0);
+                totalItems = 0;
+                totalPrice = 0;
+                updateOrderBar();
+                showToast('Order Placed Successfully!', 'success');
+            }, 500);
+        }
+    </script>
+</body>
+
+</html>
